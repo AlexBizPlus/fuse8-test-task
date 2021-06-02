@@ -1,0 +1,75 @@
+@import '../../scss/mixins';
+
+.card {
+  @include flex-column(flex-start, flex-start);
+  padding-bottom: 17px;
+  background-color: $background;
+  border: 1px solid $border;
+  outline: none;
+
+  &:active,
+  &:focus {
+    border-color: $black;
+  }
+}
+
+.title {
+  margin-top: 20px;
+  margin-bottom: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 27px;
+  color: $text;
+}
+
+.text {
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 16px;
+  line-height: 22px;
+  color: $text;
+
+  &__price {
+    margin-top: 15px;
+    margin-bottom: 7px;
+  }
+
+  &__small {
+    font-size: 14px;
+    line-height: 19px;
+  }
+
+  &__bold {
+    font-weight: 700;
+  }
+}
+
+.img {
+  position: relative;
+  order: -1;
+}
+
+.type {
+  @include flex-row(center, center);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 30px;
+  padding-left: 8px;
+  padding-right: 8px;
+  color: $white;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  transform: translateY(-4px);
+
+  &__sea {
+    background-color: $sea;
+  }
+
+  &__orange {
+    background-color: $orange;
+  }
+}
