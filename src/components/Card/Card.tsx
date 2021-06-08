@@ -12,10 +12,11 @@ interface ICard {
   props: IHomes;
 }
 
+const api = createAPI(BACKEND_URL_IMG);
+
 const Card = ({ props }: ICard) => {
   const { id, title, address, type, price } = props;
   const [imgSrc, setImgSrc] = useState<string | null>(null);
-  const api = createAPI(BACKEND_URL_IMG);
 
   useEffect(() => {
     api.get(`/${ImgSize.width}/${ImgSize.height}`).then((res) => setImgSrc(res.request.responseURL));

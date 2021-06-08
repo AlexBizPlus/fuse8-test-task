@@ -54,14 +54,19 @@ const HomePage = () => {
       </div>
       <div className={cl(s.list)}>
         {homes.length > 0
-          ? homes.map((home) => <Card props={home} key={home.title} />)
+          ? homes.map((home, i) => {
+              if (i < CARD_COUNT) {
+                return <Card props={home} key={home.title} />;
+              }
+              return null;
+            })
           : new Array(CARD_COUNT).fill('').map((_item, i) => (
               // eslint-disable-next-line react/no-array-index-key
               <Skeleton height={CardSize.height} width={CardSize.width} key={`item${i}`} />
             ))}
       </div>
       <Link className={cl(s.link)} to={Routes.ERROR404}>
-        See more
+        See more homes
       </Link>
     </div>
   );
