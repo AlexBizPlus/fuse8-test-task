@@ -5,12 +5,13 @@ import { Link } from 'react-router-dom';
 import s from './HomePage.module.scss';
 import { CARD_COUNT, Routes, IHomes, CardSize, MIN_SEARCH } from '../../const';
 import { createAPI } from '../../api/api';
-import { APIRoute } from '../../api/const';
+import { APIRoute, BACKEND_URL } from '../../api/const';
 import Card from '../../components/Card/Card';
+
+const api = createAPI(BACKEND_URL);
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState('');
-  const api = createAPI();
   const [homes, setHomes] = useState<IHomes[]>([]);
   const [allHomes, setAllHomes] = useState<IHomes[]>([]);
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +54,7 @@ const HomePage = () => {
       </div>
       <div className={cl(s.list)}>
         {homes.length > 0
-          ? homes.map((home, i) => <Card props={home} index={i} key={home.title} />)
+          ? homes.map((home) => <Card props={home} key={home.title} />)
           : new Array(CARD_COUNT).fill('').map((_item, i) => (
               // eslint-disable-next-line react/no-array-index-key
               <Skeleton height={CardSize.height} width={CardSize.width} key={`item${i}`} />

@@ -1,19 +1,10 @@
-import axios from "axios";
-import { BACKEND_URL, BACKEND_URL_IMG, REQUEST_TIMEOUT } from "./const";
+import axios from 'axios';
+import { REQUEST_TIMEOUT } from './const';
 
-export const createAPI = () => {
+// eslint-disable-next-line import/prefer-default-export
+export const createAPI = (url: string) => {
   const api = axios.create({
-    baseURL: BACKEND_URL,
-    timeout: REQUEST_TIMEOUT,
-    withCredentials: false,
-  });
-
-  return api;
-};
-
-export const createImgAPI = () => {
-  const api = axios.create({
-    baseURL: BACKEND_URL_IMG,
+    baseURL: url,
     timeout: REQUEST_TIMEOUT,
     withCredentials: false,
   });

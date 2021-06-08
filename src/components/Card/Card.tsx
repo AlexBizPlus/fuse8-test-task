@@ -4,18 +4,18 @@ import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import s from './Card.module.scss';
 import { IHomes, ImgSize, Routes } from '../../const';
-import { createImgAPI } from '../../api/api';
+import { createAPI } from '../../api/api';
 import { splitPrice } from '../../utils';
+import { BACKEND_URL_IMG } from '../../api/const';
 
 interface ICard {
   props: IHomes;
-  index: number;
 }
 
-const Card = ({ props, index }: ICard) => {
+const Card = ({ props }: ICard) => {
   const { id, title, address, type, price } = props;
   const [imgSrc, setImgSrc] = useState<string | null>(null);
-  const api = createImgAPI();
+  const api = createAPI(BACKEND_URL_IMG);
 
   useEffect(() => {
     api.get(`/${ImgSize.width}/${ImgSize.height}`).then((res) => setImgSrc(res.request.responseURL));
