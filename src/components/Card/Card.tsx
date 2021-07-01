@@ -3,13 +3,13 @@ import cl from 'clsx';
 import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import s from './Card.module.scss';
-import { IHomes, ImgSize, Routes } from '../../const';
+import { IHome, ImgSize, Routes } from '../../const';
 import { createAPI } from '../../api/api';
 import { splitPrice } from '../../utils';
 import { BACKEND_URL_IMG } from '../../api/const';
 
 interface ICard {
-  props: IHomes;
+  props: IHome;
 }
 
 const api = createAPI(BACKEND_URL_IMG);
@@ -29,7 +29,7 @@ const Card = ({ props }: ICard) => {
       <span className={cl(s.text)}>{address}</span>
       <span className={cl(s.text, s.text__price)}>
         New Properties for Sale from
-        <span className={cl(s.text__bold)}> £{splitPrice(price)}</span>
+        {price && <span className={cl(s.text__bold)}> £{splitPrice(price)}</span>}
       </span>
       <span className={cl(s.text, s.text__small)}>Shared Ownership Available</span>
 

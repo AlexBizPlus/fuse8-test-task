@@ -1,40 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import cl from 'clsx';
-import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import s from './HomePage.module.scss';
-import { CARD_COUNT, Routes, IHomes, CardSize, MIN_SEARCH } from '../../const';
+import { Routes, IHome, MIN_SEARCH } from '../../const';
 import { createAPI } from '../../api/api';
 import { APIRoute, BACKEND_URL } from '../../api/const';
-import Card from '../../components/Card/Card';
+import CardList from '../../components/CardList/CardList';
 
 const api = createAPI(BACKEND_URL);
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState('');
-  const [homes, setHomes] = useState<IHomes[]>([]);
-  const [allHomes, setAllHomes] = useState<IHomes[]>([]);
+  const [inputOldLength, setInputOldLength] = useState<number>(0);
+  const [inputNewLength, setInputNewLength] = useState<number>(0);
+  const [homes, setHomes] = useState<IHome[]>([]);
+  const [cardList, setCardList] = useState<IHome[]>([]);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isNotFound, setIsNotFound] = useState<boolean>(false);
+
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.currentTarget;
     setInputValue(value);
+
+    if (inputNewLength === 0 && inputOldLength === 0) {
+      setInputOldLength(value.length);
+      setInputNewLength(value.length);
+      return;
+    }
+    setInputOldLength(inputNewLength);
+    setInputNewLength(value.length);
+  };
+
+  const getHomes = () => {
+    api
+      .get(APIRoute.HOMES)
+      .then((res) => {
+        setHomes(res.data as IHome[]);
+        setCardList(res.data as IHome[]);
+      })
+      .catch((err) => setIsError(true));
   };
 
   useEffect(() => {
-    api.get(APIRoute.HOMES).then((res) => {
-      setHomes(res.data as IHomes[]);
-      setAllHomes(res.data as IHomes[]);
-    });
+    getHomes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (inputValue.length > MIN_SEARCH) {
-      setHomes(homes.filter((home) => home.title.includes(inputValue, 0)));
-    } else {
-      setHomes(allHomes);
+    if (cardList.length === 0 && inputNewLength && inputNewLength > 0 && !isError) {
+      setIsNotFound(true);
+    } else setIsNotFound(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardList.length]);
+
+  useEffect(() => {
+    if (inputOldLength > MIN_SEARCH && inputNewLength <= MIN_SEARCH && homes.length !== cardList.length) {
+      getHomes();
+    }
+    if (inputNewLength > MIN_SEARCH) {
+      setCardList(homes.filter((home) => home.title.includes(inputValue, 0)));
+    }
+    if (inputNewLength === 0) {
+      setInputOldLength(0);
+      setInputNewLength(0);
+      getHomes();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputValue]);
+  }, [inputNewLength]);
 
   return (
     <div className={cl(s.homePage)}>
@@ -43,7 +75,7 @@ const HomePage = () => {
         <label htmlFor="search">
           Filter
           <input
-            className={cl(s.filter__input)}
+            className={cl(s.filterInput)}
             type="text"
             id="search"
             autoComplete="off"
@@ -52,19 +84,13 @@ const HomePage = () => {
           />
         </label>
       </div>
-      <div className={cl(s.list)}>
-        {homes.length > 0
-          ? homes.map((home, i) => {
-              if (i < CARD_COUNT) {
-                return <Card props={home} key={home.title} />;
-              }
-              return null;
-            })
-          : new Array(CARD_COUNT).fill('').map((_item, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Skeleton height={CardSize.height} width={CardSize.width} key={`item${i}`} />
-            ))}
-      </div>
+      {!isError && !isNotFound && cardList && <CardList cardList={cardList} />}
+      {isError && (
+        <p className={cl(s.messageText)}>
+          Не удалось загрузить данные. Попробуйте, пожалуйста, еще раз через некоторое время
+        </p>
+      )}
+      {isNotFound && <p className={cl(s.message_text)}>Ничего не найдено. Попробуйте изменить параметры запроса</p>}
       <Link className={cl(s.link)} to={Routes.ERROR404}>
         See more homes
       </Link>

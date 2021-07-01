@@ -34,5 +34,6 @@ body {
 }
 
 #root {
+  @include flex-column(flex-start, center);
   width: 100%;
 }

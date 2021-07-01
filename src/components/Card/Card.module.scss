@@ -8,7 +8,8 @@
   outline: none;
 
   &:active,
-  &:focus {
+  &:focus,
+  &:hover {
     border-color: $black;
   }
 }
